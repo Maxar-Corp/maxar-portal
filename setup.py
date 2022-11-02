@@ -6,7 +6,7 @@ HERE = pathlib.Path(__file__).parent.resolve()
 README = (HERE / "README.md").read_text()
 
 setup(
-  name = 'MPS_Portal_SDK',
+  name = 'Maxar_Portal_SDK',
   version = '1.0.0',
   license='MIT',
   description = 'SDK for interacting with Maxar imagery platforms',
