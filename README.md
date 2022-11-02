@@ -13,7 +13,7 @@
 ```
 from MPS_Portal_SDK import Interface
 
-portal = Interface() # if .ogc-config was created
+portal = Interface()
  
 print(help(portal))
 ```
