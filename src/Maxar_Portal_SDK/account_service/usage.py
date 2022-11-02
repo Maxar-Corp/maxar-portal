@@ -1,6 +1,6 @@
 import requests
 import warnings
-import MPS_Portal_SDK.process as process
+import Maxar_Portal_SDK.process as process
 
 warnings.filterwarnings('ignore')
 

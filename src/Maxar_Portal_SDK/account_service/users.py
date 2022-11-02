@@ -1,6 +1,6 @@
 import requests
 import json
-import MPS_Portal_SDK.process as process
+import Maxar_Portal_SDK.process as process
 
 
 class Users:

@@ -1,6 +1,6 @@
-from MPS_Portal_SDK.ogc.interface import Interface as ogc_interface
-from MPS_Portal_SDK.account_service.interface import Interface as account_interface
-from MPS_Portal_SDK.auth.auth import Auth
+from Maxar_Portal_SDK.ogc.interface import Interface as ogc_interface
+from Maxar_Portal_SDK.account_service.interface import Interface as account_interface
+from Maxar_Portal_SDK.auth.auth import Auth
 
 
 class Interface:

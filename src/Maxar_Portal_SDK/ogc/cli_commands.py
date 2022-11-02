@@ -1,7 +1,7 @@
 import click
 import sys
 import os
-from MPS_Portal_SDK.ogc.interface import Interface
+from Maxar_Portal_SDK.ogc.interface import Interface
 
 
 def check_for_config():

@@ -1,6 +1,6 @@
-import MPS_Portal_SDK.account_service.products as products
+import Maxar_Portal_SDK.account_service.products as products
 import requests
-import MPS_Portal_SDK.process as process
+import Maxar_Portal_SDK.process as process
 import json
 
 

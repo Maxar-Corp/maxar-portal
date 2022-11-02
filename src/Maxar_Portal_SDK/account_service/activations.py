@@ -1,7 +1,7 @@
-import MPS_Portal_SDK.account_service.roles as roles
+import Maxar_Portal_SDK.account_service.roles as roles
 import requests
 import json
-import MPS_Portal_SDK.process as process
+import Maxar_Portal_SDK.process as process
 
 class Activations:
 

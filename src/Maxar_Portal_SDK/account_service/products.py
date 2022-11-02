@@ -1,6 +1,6 @@
 import requests, warnings, json
 warnings.filterwarnings("ignore")
-import MPS_Portal_SDK.process as process
+import Maxar_Portal_SDK.process as process
 
 class Products:
 

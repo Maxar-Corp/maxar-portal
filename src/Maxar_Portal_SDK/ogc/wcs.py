@@ -1,5 +1,5 @@
 import requests
-import MPS_Portal_SDK.process as process
+import Maxar_Portal_SDK.process as process
 from pathlib import Path
 
 

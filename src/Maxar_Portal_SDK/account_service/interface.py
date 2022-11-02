@@ -1,11 +1,11 @@
-from MPS_Portal_SDK.account_service.users import Users
-from MPS_Portal_SDK.account_service.roles import Roles
-from MPS_Portal_SDK.account_service.activations import Activations
-from MPS_Portal_SDK.account_service.rate_tables import RateTables
-from MPS_Portal_SDK.account_service.rate_tables import Table_Info
-from MPS_Portal_SDK.account_service.addresses import Address
-from MPS_Portal_SDK.account_service.products import Products
-from MPS_Portal_SDK.account_service.usage import Usage
+from Maxar_Portal_SDK.account_service.users import Users
+from Maxar_Portal_SDK.account_service.roles import Roles
+from Maxar_Portal_SDK.account_service.activations import Activations
+from Maxar_Portal_SDK.account_service.rate_tables import RateTables
+from Maxar_Portal_SDK.account_service.rate_tables import Table_Info
+from Maxar_Portal_SDK.account_service.addresses import Address
+from Maxar_Portal_SDK.account_service.products import Products
+from Maxar_Portal_SDK.account_service.usage import Usage
 
 
 import warnings

@@ -9,7 +9,7 @@ import random
 import string
 import queue
 from concurrent.futures import ThreadPoolExecutor
-from MPS_Portal_SDK.auth import auth
+from Maxar_Portal_SDK.auth import auth
 
 
 def authorization(auth_class=None):

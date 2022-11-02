@@ -6,11 +6,11 @@ import warnings
 from concurrent.futures import as_completed
 from PIL import Image
 
-from MPS_Portal_SDK.ogc.wms import WMS
-from MPS_Portal_SDK.ogc.wfs import WFS
-from MPS_Portal_SDK.ogc.wmts import WMTS
-from MPS_Portal_SDK.ogc.wcs import WCS
-import MPS_Portal_SDK.process as process
+from Maxar_Portal_SDK.ogc.wms import WMS
+from Maxar_Portal_SDK.ogc.wfs import WFS
+from Maxar_Portal_SDK.ogc.wmts import WMTS
+from Maxar_Portal_SDK.ogc.wcs import WCS
+import Maxar_Portal_SDK.process as process
 
 warnings.filterwarnings("ignore")
 
