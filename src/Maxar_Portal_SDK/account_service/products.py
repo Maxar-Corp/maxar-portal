@@ -5,7 +5,7 @@ import Maxar_Portal_SDK.process as process
 class Products:
 
     def __init__(self, auth):
-        self.base_url = auth.base_url
+        self.base_url = auth.api_base_url
         self.response = None
         self.version = auth.version
         self.auth = auth
@@ -18,7 +18,7 @@ class Products:
 
         authorization = process.authorization(self.auth)
         url = "{}/accountservice/api/v1/products".format(self.base_url)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -83,7 +83,7 @@ class Products:
         "productCategoryCode": "{}".format(code),
         "usageType": '{}'.format(usageType)
         })
-        response = requests.request("POST", url, headers=authorization, data=payload, verify=False)
+        response = requests.request("POST", url, headers=authorization, data=payload, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -98,7 +98,7 @@ class Products:
 
         authorization = process.authorization(self.auth)
         url = "{}/accountservice/api/v1/products/{}".format(self.base_url, productId)
-        response = requests.request("DELETE", url, headers=authorization, verify=False)
+        response = requests.request("DELETE", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return "Product {} successfully deleted".format(productId)
 

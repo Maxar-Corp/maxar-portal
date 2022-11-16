@@ -6,7 +6,7 @@ from pathlib import Path
 class WCS:
     def __init__(self, auth):
         self.auth = auth
-        self.base_url = auth.base_url + "/deliveryservice/wcsaccess"
+        self.base_url = auth.api_base_url + "/deliveryservice/wcsaccess"
         self.response = None
         self.version = auth.version
         self.querystring = self._init_querystring()
@@ -41,6 +41,7 @@ class WCS:
             bbox = ",".join([bbox_list[1], bbox_list[0], bbox_list[3], bbox_list[2], bbox_list[4]])
             self.querystring.update({'boundingbox': bbox})
         if 'filter' in keys:
+            process.cql_checker(kwargs['filter'])
             self.querystring.update({'coverage_cql_filter': kwargs['filter']})
             del (kwargs['filter'])
         for key, value in kwargs.items():

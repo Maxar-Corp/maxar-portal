@@ -5,7 +5,7 @@ import Maxar_Portal_SDK.process as process
 class WMS:
     def __init__(self, auth):
         self.auth = auth
-        self.base_url = auth.base_url + "/geoserver/wms"
+        self.base_url = auth.api_base_url + "/geoserver/wms"
         self.response = None
         self.version = auth.version
         self.querystring = self._init_querystring()
@@ -41,6 +41,7 @@ class WMS:
         else:
             raise Exception('Search function must have a BBOX.')
         if 'filter' in keys:
+            process.cql_checker(kwargs['filter'])
             self.querystring.update({'cql_filter': kwargs['filter']})
             del (kwargs['filter'])
         for key, value in kwargs.items():

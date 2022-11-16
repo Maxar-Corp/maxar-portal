@@ -7,7 +7,7 @@ import json
 class Table_Info:
 
     def __init__(self, auth):
-        self.base_url = auth.base_url
+        self.base_url = auth.api_base_url
         self.response = None
         self.version = auth.version
         self.auth = auth
@@ -26,7 +26,7 @@ class Table_Info:
             url = self.base_url + '/accountservice/api/v1/ratetables/{}'.format(table_id)
         else:
             url = self.base_url + '/accountservice/api/v1/ratetables'
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -41,7 +41,7 @@ class Table_Info:
 
         authorization = process.authorization(self.auth)
         url = self.base_url + '/accountservice/api/v1/ratetables/{}/activations'.format(table_id)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -54,7 +54,7 @@ class Table_Info:
 
         authorization = process.authorization(self.auth)
         url = self.base_url + '/accountservice/api/v1/ratetables/credittypes'
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -69,14 +69,14 @@ class Table_Info:
 
         authorization = process.authorization(self.auth)
         url = self.base_url + '/accountservice/api/v1/ratetables/{}/productCredits'.format(table_id)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
 class RateTables:
 
     def __init__(self, auth):
-        self.base_url = auth.base_url
+        self.base_url = auth.api_base_url
         self.response = None
         self.version = auth.version
         self.auth = auth
@@ -122,7 +122,7 @@ class RateTables:
             )
             count += 1
         payload = json.dumps(payload)
-        response = requests.request("POST", url, headers=authorization, data=payload, verify=False)
+        response = requests.request("POST", url, headers=authorization, data=payload, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -178,7 +178,7 @@ class RateTables:
                     )
             payload.update({item: kwargs[item]})
         payload = json.dumps(payload)
-        response = requests.request("PUT", url, headers=authorization, data=payload, verify=False)
+        response = requests.request("PUT", url, headers=authorization, data=payload, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -195,6 +195,6 @@ class RateTables:
 
         authorization = process.authorization(self.auth)
         url = self.base_url + '/accountservice/api/v1/ratetables/{}'.format(table_id)
-        response = requests.request("DELETE", url, headers=authorization, verify=False)
+        response = requests.request("DELETE", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return "Rate table {} successfully deleted".format(table_id)

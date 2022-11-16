@@ -11,6 +11,7 @@ from Maxar_Portal_SDK.ogc.wfs import WFS
 from Maxar_Portal_SDK.ogc.wmts import WMTS
 from Maxar_Portal_SDK.ogc.wcs import WCS
 import Maxar_Portal_SDK.process as process
+# import Maxar_OGC.process as process
 
 warnings.filterwarnings("ignore")
 
@@ -19,7 +20,6 @@ class Interface:
     """
     The primary interface for interacting with the WMS and WFS OGC classes.
     Args:
-        base_url (string) = The url that you are using ex. 'https://securewatch.digitalglobe.com/'
         username (string) = The username if your connectId requires Auth
         password (string) = The password associated with your username
     """
@@ -47,7 +47,8 @@ class Interface:
         Returns:
             Response is either a list of features or a shapefile of all features and associated metadata.
         """
-
+        if filter:
+            process.cql_checker(filter)
         if shapefile:
             result = self.wfs.search(bbox=bbox, filter=filter, outputformat='shape-zip', **kwargs)
         elif csv:
@@ -269,7 +270,8 @@ class Interface:
         Returns:
             Downloaded image location of desired bbox dependent on pixel height and width
         """
-
+        if 'filter' in kwargs:
+            process.cql_checker(kwargs.get('filter'))
         img_formatted = process._check_image_format(img_format)
         process._validate_bbox(bbox)
         if width <= 0 or width > 8000:

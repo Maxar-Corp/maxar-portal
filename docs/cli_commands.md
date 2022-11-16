@@ -11,14 +11,21 @@ After downloading the MPS_Portal_SDK library, open a terminal session and activa
 - The terminal will prompt you for a new password
 - Enter in desired password
 
+### Create a User Token (Optional)
+- In the terminal, enter 'token' to create a token secret to authenticate into the platform.
+- If a token has already been created enter 'secret' into the terminal to show the existing tokens
+- Tokens will be stored in the '.MPS-config' file in the home directory of the user
+
+
 ### Search available imagery
 - In the terminal, enter `search` followed by the desired flags to refine your search. Available flags can be found by running `search --help`
 - Available flags are:
   - `--box`, `-b`: Bounding box. A string of the bounding box of the desired AOI. Comma delimited set of coordinates. (miny,minx,maxy,maxx)
   - `--filter`, `-f`: Filter. A string of a CQL filter used to refine data of search
-  - `--shapefile`, `-s`: Shapefile. A boolean operator of whether or not to return found data as a shapefile format
-  - `--featureprofile`, `-fp`: Feature profile. A string of the desired stacking profile (defaults to account Default)
-  - `--typename`, `-t`: Typename. A string of the typename (defaults to FinishedFeature). Example input: MaxarCatalogMosaicProducts
+  - `--shapefile`, `-s`: Shapefile. A boolean operator to return found data as a shapefile format
+  - `--featureprofile`, `-fp`: Feature profile. A string of the desired stacking profile. Defaults to account Default
+  - `--typename`, `-t`: Typename. A string of the typename. Defaults to FinishedFeature. Example input: MaxarCatalogMosaicProducts
+
 
 For further information on search functionality, see [Search](ogc/image_search.md)
 

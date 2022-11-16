@@ -7,7 +7,7 @@ import math
 class WMTS:
     def __init__(self, auth):
         self.auth = auth
-        self.base_url = auth.base_url + "/geoserver/gwc/service/wmts"
+        self.base_url = auth.api_base_url + "/geoserver/gwc/service/wmts"
         self.response = None
         self.version = auth.version
         self.querystring = self._init_querystring()

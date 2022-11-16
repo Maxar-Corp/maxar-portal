@@ -8,10 +8,9 @@ class Auth:
     MPS-config contents:        [mps]
                                 user_name=username
                                 user_password=password
-                                url=https://marianas-demo.dev.gcsdev.com
     """
 
-    def __init__(self, base_url=None, username=None, password=None):
+    def __init__(self, username=None, password=None):
         """
         Function initializes the MPS environment and generates an access and refresh token
         Args:
@@ -20,20 +19,21 @@ class Auth:
             password (string) = Password
         """
 
-        self.base_url = base_url  # host name "https://marianas-test.dev.gcsdev.com/"
+        self.base_url = "https://account.maxar.com"
+        self.api_base_url = "https://api.maxar.com"
         self.username = username
         self.password = password
         self.access = None
         self.refresh = None
-        self.version = "1.0.0"
-        self.SSL = False
+        self.version = "1.1.0"
+        self.SSL = True
 
-        if not self.base_url: #checks if url is provided as argument to class. If not, look for .MPS-config
+        if not self.username: #checks if username is provided as argument to class. If not, look for .MPS-config
             dir_path = os.path.expanduser('~')
             file = '.MPS-config'
             full_path = os.path.join(dir_path, file)
             if os.path.isfile(full_path):
-                self.base_url, self.username, self.password = self._get_environment(full_path)
+                self.username, self.password = self._get_environment(full_path)
             else:
                 raise ValueError("Please create .MPS-config in home dir.")
         # else:
@@ -60,13 +60,12 @@ class Auth:
                     if '\n' in value:
                         value = value.replace('\n', '')
                     cred_dict.update({key: value})
-        if 'user_name' not in cred_dict.keys() or 'user_password' not in cred_dict.keys() or 'url' not in cred_dict.keys():
+        if 'user_name' not in cred_dict.keys() or 'user_password' not in cred_dict.keys():
             raise Exception('.MPS-config not formatted properly')
         else:
             user_name = cred_dict['user_name']
             password = cred_dict['user_password']
-            url = cred_dict['url']
-            return url, user_name, password
+            return user_name, password
 
 
 
@@ -76,11 +75,11 @@ class Auth:
         """
 
         url = "{}/auth/realms/mds/protocol/openid-connect/token".format(self.base_url)
-        payload = 'client_id=mds-internal-service&username={}&password={}&grant_type=password'.format(self.username, self.password)
+        payload = 'client_id=mds-internal-service&username={}&password={}&grant_type=password&scope=openid'.format(self.username, self.password)
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
-        response = requests.request("POST", url, headers=headers, data=payload, verify=False)
+        response = requests.request("POST", url, headers=headers, data=payload, verify=self.SSL)
         if response.status_code != 200:
             raise Exception('Unable to connect. Status code equals {}'.format(response.status_code))
         else:
@@ -100,7 +99,7 @@ class Auth:
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
-            response = requests.request("POST", url, headers=headers, data=payload, verify=False)
+            response = requests.request("POST", url, headers=headers, data=payload, verify=self.SSL)
 
             if response.status_code == 400 and response.json()['error_description'] == 'Token is not active':
                 self.get_auth()

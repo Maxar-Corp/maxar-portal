@@ -5,7 +5,7 @@ import Maxar_Portal_SDK.process as process
 class WFS:
     def __init__(self, auth):
         self.auth = auth
-        self.base_url = auth.base_url + "/geoserver/wfs"
+        self.base_url = auth.api_base_url + "/geoserver/wfs"
         self.response = None
         self.version = auth.version
         self.querystring = self._init_querystring()

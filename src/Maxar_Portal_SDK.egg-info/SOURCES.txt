@@ -10,6 +10,7 @@ src/Maxar_Portal_SDK.egg-info/entry_points.txt
 src/Maxar_Portal_SDK.egg-info/requires.txt
 src/Maxar_Portal_SDK.egg-info/top_level.txt
 src/Maxar_Portal_SDK/account_service/__init__.py
+src/Maxar_Portal_SDK/account_service/accounts.py
 src/Maxar_Portal_SDK/account_service/activations.py
 src/Maxar_Portal_SDK/account_service/addresses.py
 src/Maxar_Portal_SDK/account_service/interface.py
@@ -27,3 +28,6 @@ src/Maxar_Portal_SDK/ogc/wcs.py
 src/Maxar_Portal_SDK/ogc/wfs.py
 src/Maxar_Portal_SDK/ogc/wms.py
 src/Maxar_Portal_SDK/ogc/wmts.py
+src/Maxar_Portal_SDK/token_service/__init__.py
+src/Maxar_Portal_SDK/token_service/cli_commands.py
+src/Maxar_Portal_SDK/token_service/token.py

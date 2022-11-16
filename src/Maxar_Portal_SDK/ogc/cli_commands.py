@@ -16,8 +16,7 @@ def check_for_config():
 @click.command()
 @click.option('--username', '-u', help='Your username', type=str)
 @click.option('--password', '-p', help='Your password', type=str)
-@click.option('--domain', '-d', help='Desired domain', type=str)
-def config_file(username=None, password=None, domain=None):
+def config_file(username=None, password=None):
     """
     Function creates a configuration file for authentication use for Maxar tenants
     """
@@ -40,28 +39,8 @@ def config_file(username=None, password=None, domain=None):
         password = password
     else:
         password = click.prompt('Your password', hide_input=True, confirmation_prompt=True)
-    # Once domain name is decided on, it will be the only domain name going forward. We can then insert the domain for
-    # the customer ourselves and not have them enter it
-    if domain:
-        domain = domain
-    else:
-        domain = click.prompt('Desired tenant')
 
-    # domain_list = ["https://securewatch.maxar.com/", "https://access.maxar.com/", "https://evwhs.digitalglobe.com/",
-    #                "https://services.digitalglobe.com/", "https://securewatch.digitalglobe.com/"]
-    # if domain.lower() == "securewatch":
-    #     domain = "https://securewatch.maxar.com/"
-    # elif domain.lower() == "earthwatch":
-    #     domain = "https://access.maxar.com/"
-    # elif domain.lower() == "evwhs":
-    #     domain = "https://evwhs.digitalglobe.com/"
-    # else:
-    #     domain = domain
-    # if domain.lower() not in domain_list:
-    #     return click.echo('{} is not a valid tenant. Please enter a valid tenant'.format(domain))
-
-    config = ['[mps]', 'user_name={}'.format(username), 'user_password={}'.format(password),
-              'url={}'.format(domain.lower())]
+    config = ['[mps]', 'user_name={}'.format(username), 'user_password={}'.format(password)]
     with open(os.path.join(home_dir, ".MPS-config"), "w") as f:
         for line in config:
             f.write(line)

@@ -1,5 +1,6 @@
 from Maxar_Portal_SDK.account_service.users import Users
 from Maxar_Portal_SDK.account_service.roles import Roles
+from Maxar_Portal_SDK.account_service.accounts import Info, Account, Comment
 from Maxar_Portal_SDK.account_service.activations import Activations
 from Maxar_Portal_SDK.account_service.rate_tables import RateTables
 from Maxar_Portal_SDK.account_service.rate_tables import Table_Info
@@ -15,13 +16,15 @@ class Interface:
     """
     The primary interface for interacting with the Account Services classes.
     Args:
-        base_url (string) = The url that you are using ex. 'https://securewatch.digitalglobe.com/'
         username (string) = The username if your connectId requires Auth
         password (string) = The password associated with your username
     """
 
     def __init__(self, auth):
         self.auth = auth
+        self.account_info = Info(self.auth)
+        self.accounts = Account(self.auth)
+        self.comments = Comment(self.auth)
         self.users = Users(self.auth)
         self.roles = Roles(self.auth)
         self.rate_table_info = Table_Info(self.auth)
