@@ -6,7 +6,7 @@ import Maxar_Portal_SDK.process as process
 class Users:
 
     def __init__(self, auth):
-        self.base_url = auth.base_url
+        self.base_url = auth.api_base_url
         self.response = None
         self.version = auth.version
         self.auth = auth
@@ -22,7 +22,7 @@ class Users:
 
         authorization = process.authorization(self.auth)
         url = self.base_url + '/accountservice/api/v1/users?search={}'.format(search)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         if len(response.json()["users"]) < 1:
             raise Exception("No search results for {}. Please try another search term".format(search))
@@ -45,7 +45,7 @@ class Users:
             url = self.base_url + "/accountservice/api/v1/users/username/{}".format(username)
         else:
             url = self.base_url + "/accountservice/api/v1/users"
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -93,7 +93,7 @@ class Users:
         for item in kwargs.keys():
             payload.update({item: kwargs[item]})
         payload = json.dumps(payload)
-        response = requests.request("PUT", url, headers=authorization, data=payload, verify=False)
+        response = requests.request("PUT", url, headers=authorization, data=payload, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -147,7 +147,7 @@ class Users:
             payload.update({item: kwargs[item]})
 
         payload = json.dumps(payload)
-        response = requests.request("POST", url, headers=authorization, data=payload, verify=False)
+        response = requests.request("POST", url, headers=authorization, data=payload, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -187,12 +187,12 @@ class Users:
 
         if not delete:
             url = self.base_url + "/accountservice/api/v1/users/{}/assignroles".format(userId)
-            response = requests.request("POST", url, headers=authorization, data=payload, verify=False)
+            response = requests.request("POST", url, headers=authorization, data=payload, verify=self.auth.SSL)
             process_response = process._response_handler(response)
             return response.json()
         else:
             url = self.base_url + "/accountservice/api/v1/users/{}/removeroles".format(userId)
-            response = requests.request("POST", url, headers=authorization, data=payload, verify=False)
+            response = requests.request("POST", url, headers=authorization, data=payload, verify=self.auth.SSL)
             process_response = process._response_handler(response)
             return response
 
@@ -205,7 +205,7 @@ class Users:
 
         authorization = process.authorization(self.auth)
         url = self.base_url + "/accountservice/api/v1/users/roles/assigned/{}".format(userId)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process._response_handler(response)
         if response.status_code == 204:
             return {}
@@ -221,7 +221,7 @@ class Users:
 
         authorization = process.authorization(self.auth)
         url = self.base_url + "/accountservice/api/v1/users/roles/assigned-available/{}".format(userId)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -237,6 +237,6 @@ class Users:
 
         authorization = process.authorization(self.auth)
         url = self.base_url + "/accountservice/api/v1/users?userId={}".format(userId)
-        response = requests.request("DELETE", url, headers=authorization, verify=False)
+        response = requests.request("DELETE", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return "User {} successfully deleted".format(userId)

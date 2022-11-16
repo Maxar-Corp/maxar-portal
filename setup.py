@@ -7,7 +7,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
   name = 'Maxar_Portal_SDK',
-  version = '1.0.1',
+  version = '1.1.0',
   license='MIT',
   description = 'SDK for interacting with Maxar imagery platforms',
   long_description=README,
@@ -15,11 +15,11 @@ setup(
   author = 'MDS Marianas Team',
   author_email = 'DL-GCS-Marianas@maxar.com',
   project_urls = {
-        'Documentation': 'https://maxar-portal.readthedocs.io/en/latest/index.html',
+        'Documentation': 'https://maxar-portal.readthedocs.io/en/latest/',
         'Source': 'https://github.com/Maxar-Corp/maxar-portal'
         },
   keywords = ['OGC', 'WMS', 'WFS', 'WMTS', 'WCS', 'MAXAR', 'IMAGERY', 'GIS'],
-  python_requires= '>=3.6',
+  python_requires= '>=3.7',
   install_requires=[
           #'gdal',
           'pyproj',
@@ -43,15 +43,13 @@ setup(
   ],
   entry_points='''
     [console_scripts]
-    search=MPS_Portal_SDK.ogc.cli_commands:search
-    config=MPS_Portal_SDK.ogc.cli_commands:config_file
-    password=MPS_Portal_SDK.ogc.cli_commands:reset_password
-    download=MPS_Portal_SDK.ogc.cli_commands:download
-    bands=MPS_Portal_SDK.ogc.cli_commands:band_manipulation
-    area=MPS_Portal_SDK.ogc.cli_commands:calculate_bbox_sqkm
-    createToken=MPS_Portal_SDK.token_service.cli_commands:create_token
-    listTokens=MPS_Portal_SDK.token_service.cli_commands:get_tokens
-    deleteToken=MPS_Portal_SDK.token_service.cli_commands:delete_tokens
-    token=MPS_Portal_SDK.token_service.cli_commands:show_secret
+    search=Maxar_Portal_SDK.ogc.cli_commands:search
+    config=Maxar_Portal_SDK.ogc.cli_commands:config_file
+    password=Maxar_Portal_SDK.ogc.cli_commands:reset_password
+    download=Maxar_Portal_SDK.ogc.cli_commands:download
+    bands=Maxar_Portal_SDK.ogc.cli_commands:band_manipulation
+    area=Maxar_Portal_SDK.ogc.cli_commands:calculate_bbox_sqkm
+    token=Maxar_Portal_SDK.token_service.cli_commands:create_token
+    secret=Maxar_Portal_SDK.token_service.cli_commands:show_secret
     '''
 )

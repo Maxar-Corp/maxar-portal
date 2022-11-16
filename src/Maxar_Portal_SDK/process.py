@@ -10,6 +10,7 @@ import string
 import queue
 from concurrent.futures import ThreadPoolExecutor
 from Maxar_Portal_SDK.auth import auth
+from datetime import datetime
 
 
 def authorization(auth_class=None):
@@ -34,7 +35,6 @@ def _response_handler(response):
     elif 'Exception' in response.text:
         raise Exception(response.url, response.text)
     else:
-        print(response.status_code)
         raise Exception("Non-200 response {} received for {}".format(response.status_code, response.url))
     # if response.status_code != 200:
     #     raise Exception("Non-200 response received for {}.".format(response.url))
@@ -232,7 +232,6 @@ def aoi_coverage(bbox, response):
     Returns:
         Updated dictionary of the json object
     """
-
     coverage = response.json()
     if "EPSG:3857" in bbox:
         bbox_list = [i for i in bbox.split(',')]
@@ -276,6 +275,106 @@ def _check_typeName(typename):
                         'MaxarCatalogMosaicSeamlines', 'MaxarCatalogMosaicTiles']
     if typename not in acceptable_types:
         raise Exception('{} is not an acceptable TypeName. Please use one of the following {}'.format(typename, acceptable_types))
+
+
+def cql_checker(cql_filter):
+    """
+    Function checks for the validity of a passed in cql filter
+    Args:
+        cql_filter: string representation of cql filter
+    """
+    string_list = ['featureId', 'sourceUnit', 'productType', 'groundSampleDistanceUnit', 'dataLayer',
+                   'product_line_item',
+                   'legacyDescription', 'colorBandOrder', 'assetName', 'assetType', 'legacyId',
+                   'factoryOrderNumber', 'layer', 'crs', 'url', 'spatialAccuracy', 'catalogIdentifier',
+                   'tileMatrixSet', 'tileMatrix','product_name', 'product_id', 'bandDescription',
+                   'bandConfiguration', 'fullResolutionInitiatedOrder','legacyIdentifier', 'processingLevel',
+                   'companyName', 'orbitDirection', 'beamMode', 'polarisationMode', 'polarisationChannel',
+                   'antennaLookDirection', 'md5Hash', 'licenseType', 'ceCategory', 'deletedReason', 'productName',
+                   'bucketName', 'path', 'sensorType']
+    string_date_list = ['acquisitionDate', 'ingestDate', 'collect_date_min', 'createdDate', 'earliestAcquisitionTime',
+                        'latestAcquisitionTime', 'lastModifiedDate', 'deletedDate']
+    float_list = ['resolutionX', 'resolutionY', 'minimumIncidenceAngle', 'maximumIncidenceAngle',
+                   'incidenceAngleVariation', 'niirs', 'ce90Accuracy',
+                   'groundSampleDistance', 'perPixelX', 'perPixelY', 'CE90Accuracy', 'RMSEAccuracy']
+    boolean_list = ['isEnvelopeGeometry', 'isMultiPart', 'hasCloudlessGeometry']
+    integer_list = ['usageProductId']
+    source_list = ['WV01', 'WV02', 'WV03_VNIR', 'WV03', 'WV04', 'GE01', 'QB02', 'KS3', 'KS3A', 'WV03_SWIR', 'KS5',
+                   'RS2' 'IK02', 'LG01' 'LG02']
+    _0_360_list = ['sunAzimuth', 'offNadirAngle', 'sunElevation']
+    _0_1_list = ['cloudCover']
+    error_list = []
+    if cql_filter is None:
+        error_list.append('filter can not be None type')
+        raise Exception('CQL Filter Error:', error_list)
+    if cql_filter.find(')') < cql_filter.find('(') or cql_filter.count('(') != cql_filter.count(')'):
+        error_list.append('Incorrect parenthesis')
+    temp_list = [x.split('AND') for x in [i for i in cql_filter.split('OR')]]
+    cql_parse = [item.replace('(', '').replace(')', '').replace("'", "") for sublist in temp_list for item in sublist]
+    for item in cql_parse:
+        if item.find('>=') > 0:
+            key, value = item.split('>=')
+        elif item.find('<=') > 0:
+            key, value = item.split('<=')
+        elif item.find('=') > 0:
+            key, value = item.split('=')
+        elif item.find('<') > 0:
+            key, value = item.split('<')
+        elif item.find('>') > 0:
+            key, value = item.split('>')
+        else:
+            error_list.append('No comparison operator e.g. < > =')
+        if key == 'source':
+            if value not in source_list:
+                error_list.append(f'{value} should be {source_list}')
+        elif key in float_list:
+            try:
+                float(value)
+            except:
+                error_list.append(f'{value} Not a float')
+        elif key in boolean_list:
+            if value != 'FALSE' and value != 'TRUE':
+                error_list.append(f'{value} should be either TRUE or FALSE')
+        elif key in integer_list:
+            try:
+                int(value)
+            except:
+                error_list.append(f'{value} Not an integer')
+        elif key in string_date_list:
+            try:
+                format_data = "%Y-%m-%d %H:%M:%S.%f"
+                datetime.strptime(value, format_data)
+
+            except:
+                try:
+                    format_data = "%Y-%m-%d"
+                    datetime.strptime(value, format_data)
+                except:
+                    error_list.append(f'{value} Not a valid date')
+
+        elif key in string_list:
+            if not isinstance(value, str):
+                error_list.append(f'{value} Not a valid string value')
+        elif key in _0_1_list:
+            try:
+                value = float(value)
+            except:
+                error_list.append(f'{value} Not a float')
+            if not (0 <= value <= 1):
+                error_list.append(f'{value} must be between 0 and 1')
+        elif key in _0_360_list:
+            try:
+                value = float(value)
+            except:
+                error_list.append(f'{value} Not a float')
+            if not (0 <= value <= 360):
+                error_list.append(f'{value} must be between 0 and 360')
+        else:
+            error_list.append(f'{key, value} Not a valid parameter')
+    if len(error_list) > 0:
+        raise Exception('CQL Filter Error:', error_list)
+
+
 
 class BoundedThreadPoolExecutor(ThreadPoolExecutor):
 

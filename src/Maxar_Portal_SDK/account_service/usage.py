@@ -7,7 +7,7 @@ warnings.filterwarnings('ignore')
 class Usage:
 
     def __init__(self, auth):
-        self.base_url = auth.base_url
+        self.base_url = auth.api_base_url
         self.headers = process.authorization()
         self.auth = auth
 
@@ -23,7 +23,7 @@ class Usage:
             url = "{}/usageservice/api/v1/usage/activation/{}".format(self.base_url, activation_id)
         else:
             url = "{}/usageservice/api/v1/usage".format(self.base_url)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process._response_handler(response)
         return response.json()
 
@@ -34,7 +34,7 @@ class Usage:
         """
         authorization = process.authorization(self.auth)
         url = "{}/usageservice/api/v1/usage/activation/overview".format(self.base_url)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process._response_handler(response)
         return response.json()
 
@@ -52,7 +52,7 @@ class Usage:
             url = '{}/usageservice/api/v1/usage/activation/{}/allowed'.format(self.base_url, activation_id)
         else:
             url = "{}/usageservice/api/v1/usage/allowed".format(self.base_url)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process._response_handler(response)
         try:
             return response.json()
@@ -74,7 +74,7 @@ class Usage:
             url = '{}/usageservice/api/v1/usage/activation/{}/allowed/download?sqKm={}&productId={}'.format(self.base_url,activation_id,sqkm,productId)
         else:
             url = "{}/usageservice/api/v1/usage/allowed/download?sqKm={}&productId={}".format(self.base_url,sqkm,productId)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process._response_handler(response)
         try:
             return response.json()

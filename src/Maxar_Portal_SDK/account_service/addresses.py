@@ -6,7 +6,7 @@ import Maxar_Portal_SDK.process as process
 class Address:
 
     def __init__(self, auth):
-        self.base_url = auth.base_url
+        self.base_url = auth.api_base_url
         self.response = None
         self.version = auth.version
         self.auth = auth
@@ -22,7 +22,7 @@ class Address:
 
         authorization = process.authorization(self.auth)
         url = self.base_url + '/accountservice/api/v1/addresses/{}'.format(address_id)
-        response = requests.request("GET", url, headers=authorization, verify=False)
+        response = requests.request("GET", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -57,7 +57,7 @@ class Address:
                                 "Phone number must be 10 digits long and separated by two hyphens".format(kwargs[item]))
             payload.update({item: kwargs[item]})
         payload = json.dumps(payload)
-        response = requests.request("POST", url, headers=authorization, data=payload, verify=False)
+        response = requests.request("POST", url, headers=authorization, data=payload, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -99,7 +99,7 @@ class Address:
                                 "Phone number must be 10 digits long and separated by two hyphens".format(kwargs[item]))
             payload.update({item: kwargs[item]})
         payload = json.dumps(payload)
-        response = requests.request("PUT", url, headers=authorization, data=payload, verify=False)
+        response = requests.request("PUT", url, headers=authorization, data=payload, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return response.json()
 
@@ -114,6 +114,6 @@ class Address:
 
         authorization = process.authorization(self.auth)
         url = self.base_url + '/accountservice/api/v1/addresses?id={}'.format(address_id)
-        response = requests.request("DELETE", url, headers=authorization, verify=False)
+        response = requests.request("DELETE", url, headers=authorization, verify=self.auth.SSL)
         process_response = process._response_handler(response)
         return "Address {} successfully deleted".format(address_id)
