@@ -50,11 +50,11 @@
 
 #### outputdirectory (str):
 
-  The `outputdirectory` is the desired location for the image to be downloaded. `outputdirectory` defaults to root directory and defaults name of file to download (ex: `r'C:\Users\<user>\download.jpeg'`). File extension is also needed in `outputpath` if declared (ex: `r'C:\Users\<user>\image.jpeg'`)
+  The `outputdirectory` is the desired location for the image to be downloaded. `outputdirectory` defaults to root directory (ex: `r'C:\Users\<user>'`).
 
    **Example:**
    
-     interface.get_full_res_image(featureid='932f7992a4d86a9ca412c024c22792ce', outputdirectory=r'C:\Users\<user>\download.jpeg')
+     interface.get_full_res_image(featureid='932f7992a4d86a9ca412c024c22792ce', outputdirectory=r'C:\Users\<user>\full_res_directory')
 
 #### img_format (str):
 
@@ -63,3 +63,12 @@
    **Example:**
    
      interface.get_full_res_image(featureid='932f7992a4d86a9ca412c024c22792ce', img_format='jpeg')
+	 
+#### filename (str):
+
+  If `mosaic` is set to True, the filename of the mosaiced image, defaults to `merged_image`. Recommended to be used with `outputdirectory` as noted above.
+  
+    **Example:**
+	
+	  interface.get_full_res_image(featureid='932f7992a4d86a9ca412c024c22792ce', outputdirectory=r'C:\Users\<user>\full_res_directory', filename='My_Mosaic')
+	  
