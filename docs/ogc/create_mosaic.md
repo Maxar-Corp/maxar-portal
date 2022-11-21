@@ -32,8 +32,16 @@
 
 #### outputdirectory (str):
 
-  The `outputdirectory` is the desired location for the image to be downloaded (defaults to root directory and defaults name of file to download (ex: `C:\Users\<user>\merged_image.png`)).
+  The `outputdirectory` is the desired location for the image to be downloaded (defaults to root directory (ex: `C:\Users\<user>\`)).
 
    **Example:**
    
      interface.create_mosaic(base_dir=base_dir, img_size=1024, img_format='png', outputdirectory=outputdirectory)
+	 
+#### filename (str):
+
+  The filename of the mosaiced image, defaults to `merged_image`
+  
+    **Example:**
+	
+	  interface.create_mosaic(base_dir=base_dir, img_size=1024, img_format='png', filename='My_Mosaic')

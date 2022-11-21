@@ -9,7 +9,7 @@ The connection is established using login credentials stored in a local config f
 
 Installation:
 
-1. Installation via pip is recommened: ``pip install Maxar-MPS`` in your environment.
+1. Installation via pip is recommened: ``pip install Maxar-Portal-SDK`` in your environment.
 2. We recommend creating a credentials file to store your login information for future sessions in one of two ways. 
 	* Use the command line interface command ``config`` from the command prompt and follow the prompts. See [Command Line Interface](ogc/cli_commands)
 	* Create a credentials file called ``.mps-config`` in your home directory with the following format
@@ -17,7 +17,6 @@ Installation:
 			[mps] 
 			user_name=<your-user-name>
 			user_password=<your-password>
-			user_tenant=<your-base-url> i.e. https://marianas-test.dev.mdsdev.com
 
 After creating your config file, you are now ready to start with the following guides:
 
