@@ -7,7 +7,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
   name = 'Maxar_Portal_SDK',
-  version = '1.1.1',
+  version = '1.1.2',
   license='MIT',
   description = 'SDK for interacting with Maxar imagery platforms',
   long_description=README,
@@ -19,7 +19,7 @@ setup(
         'Source': 'https://github.com/Maxar-Corp/maxar-portal'
         },
   keywords = ['OGC', 'WMS', 'WFS', 'WMTS', 'WCS', 'MAXAR', 'IMAGERY', 'GIS'],
-  python_requires= '>=3.7',
+  python_requires= '>=3.6',
   install_requires=[
           #'gdal',
           'pyproj',
@@ -37,6 +37,7 @@ setup(
     'Intended Audience :: Developers',
     'Topic :: Software Development :: Build Tools',
     'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
