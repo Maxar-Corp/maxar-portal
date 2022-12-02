@@ -95,12 +95,11 @@ class Auth:
         if self.refresh:
             url = "{}/auth/realms/mds/protocol/openid-connect/token".format(self.base_url)
 
-            payload = 'grant_type=refresh_token&refresh_token={}&client_id=mds-internal-service'.format(self.refresh)
+            payload = 'grant_type=refresh_token&refresh_token={}&client_id=mds-internal-service&scope=openid'.format(self.refresh)
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
             response = requests.request("POST", url, headers=headers, data=payload, verify=self.SSL)
-
             if response.status_code == 400 and response.json()['error_description'] == 'Token is not active':
                 self.get_auth()
             elif response.status_code != 200:

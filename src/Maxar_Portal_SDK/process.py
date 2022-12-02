@@ -299,8 +299,8 @@ def cql_checker(cql_filter):
                    'groundSampleDistance', 'perPixelX', 'perPixelY', 'CE90Accuracy', 'RMSEAccuracy']
     boolean_list = ['isEnvelopeGeometry', 'isMultiPart', 'hasCloudlessGeometry']
     integer_list = ['usageProductId']
-    source_list = ['WV01', 'WV02', 'WV03_VNIR', 'WV03', 'WV04', 'GE01', 'QB02', 'KS3', 'KS3A', 'WV03_SWIR', 'KS5',
-                   'RS2' 'IK02', 'LG01' 'LG02']
+    source_list = ["'WV01'", "'WV02'", "'WV03_VNIR'", "'WV03'", "'WV04'", "'GE01'", "'QB02'", "'KS3'", "'KS3A'", "'WV03_SWIR'", "'KS5'",
+                   "'RS2'", "'IK02'", "'LG01'", "'LG02'"]
     _0_360_list = ['sunAzimuth', 'offNadirAngle', 'sunElevation']
     _0_1_list = ['cloudCover']
     error_list = []
@@ -310,7 +310,7 @@ def cql_checker(cql_filter):
     if cql_filter.find(')') < cql_filter.find('(') or cql_filter.count('(') != cql_filter.count(')'):
         error_list.append('Incorrect parenthesis')
     temp_list = [x.split('AND') for x in [i for i in cql_filter.split('OR')]]
-    cql_parse = [item.replace('(', '').replace(')', '').replace("'", "") for sublist in temp_list for item in sublist]
+    cql_parse = [item.replace('(', '').replace(')', '') for sublist in temp_list for item in sublist]
     for item in cql_parse:
         if item.find('>=') > 0:
             key, value = item.split('>=')
@@ -324,9 +324,10 @@ def cql_checker(cql_filter):
             key, value = item.split('>')
         else:
             error_list.append('No comparison operator e.g. < > =')
+            raise Exception('CQL Filter Error:', error_list)
         if key == 'source':
             if value not in source_list:
-                error_list.append(f'{value} should be {source_list}')
+                error_list.append(f'{value} should be one of {source_list}')
         elif key in float_list:
             try:
                 float(value)
@@ -341,6 +342,9 @@ def cql_checker(cql_filter):
             except:
                 error_list.append(f'{value} Not an integer')
         elif key in string_date_list:
+            if value[0] != "'" or value[-1] != "'":
+                error_list.append(f'{value} Need single quotes around dates')
+            value = value.replace("'", "")
             try:
                 format_data = "%Y-%m-%d %H:%M:%S.%f"
                 datetime.strptime(value, format_data)
@@ -353,6 +357,8 @@ def cql_checker(cql_filter):
                     error_list.append(f'{value} Not a valid date')
 
         elif key in string_list:
+            if value[0] != "'" or value[-1] != "'":
+                error_list.append(f'{value} Need single quotes around string values')
             if not isinstance(value, str):
                 error_list.append(f'{value} Not a valid string value')
         elif key in _0_1_list:

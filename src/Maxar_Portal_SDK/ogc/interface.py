@@ -5,7 +5,6 @@ import requests
 import warnings
 from concurrent.futures import as_completed
 from PIL import Image
-
 from Maxar_Portal_SDK.ogc.wms import WMS
 from Maxar_Portal_SDK.ogc.wfs import WFS
 from Maxar_Portal_SDK.ogc.wmts import WMTS
@@ -417,14 +416,14 @@ class Interface:
             bbox_order = bbox.split(',')
             if srsname == "EPSG:3857":
                 miny = max(miny, float(bbox_order[0]))
-                maxy = min(maxy, float(bbox_order[2]))
+                maxy = min(maxy, float(bbox_order[2])) + 468.1536
                 minx = max(minx, float(bbox_order[1]))
-                maxx = min(maxx, float(bbox_order[3]))
+                maxx = min(maxx, float(bbox_order[3])) + 468.1536
             else:
                 miny = max(miny, float(bbox_order[0]))
-                maxy = min(maxy, float(bbox_order[2]))
+                maxy = min(maxy, float(bbox_order[2])) + 0.0042176
                 minx = max(minx, float(bbox_order[1]))
-                maxx = min(maxx, float(bbox_order[3]))
+                maxx = min(maxx, float(bbox_order[3])) + 0.0054932
 
         y_list = []
         x_list = []
@@ -629,31 +628,98 @@ class Interface:
         split_array_and_send_requests(multithreading_array, num_attempts=0)
 
         if mosaic:
-            self.create_mosaic(base_dir=outputdirectory, img_size=1024, **kwargs)
-            return "Finished full image download process, output directory is: {}. Beginning mosaic process".\
-                format(os.path.split(outputdirectory)[0])
+            if 'image_format' in kwargs.keys():
+                self.create_mosaic(base_dir=outputdirectory, img_format=kwargs['image_format'], img_size=1024, **kwargs)
+                return "Finished full image download process, output directory is: {}. Beginning mosaic process". \
+                    format(os.path.split(outputdirectory)[0])
+            else:
+                self.create_mosaic(base_dir=outputdirectory, img_size=1024, img_format='jpeg', **kwargs)
+                return "Finished full image download process, output directory is: {}. Beginning mosaic process".\
+                    format(os.path.split(outputdirectory)[0])
         else:
             return "Finished full image download process, output directory is: {}".\
                 format(os.path.split(outputdirectory)[0])
 
-    def create_mosaic(self, base_dir, img_size=1024, image_format='png', **kwargs):
+    def create_mosaic(self, base_dir, img_format, img_size=1024, **kwargs):
         '''
         Function creates a mosaic of downloaded image tiles from full_res_dowload function
         Args:
             base_dir (string) = Root directory containing image files to be mosaiced
-            img_size (int) = Size of individual image files, defaults to 1024
             img_format (string) = Image format of files
+            img_size (int) = Size of individual image files, defaults to 1024
         Kwargs:
             outputdirectory (string) = Directory destination of finished mosaic file
             filename (string) = filename of merged image
         Returns:
             None
         '''
+
+        if img_format == 'geotiff':
+            try:
+                import rasterio
+                from rasterio.merge import merge
+            except:
+                self._pillow_mosaic(base_dir, img_format, img_size=img_size, **kwargs)
+                print("GDAL is not installed on your machine. The downloaded image will not be georeferenced. "
+                              " Please refer to the Maxar_Portal_SDK documentation for steps on how to install GDAL in "
+                              "your environment.")
+            else:
+                srcs_to_mosaic = []
+                for image in os.listdir(base_dir):
+                    if image.endswith('.geotiff'):
+                        raster = rasterio.open(os.path.join(base_dir, image))
+                        srcs_to_mosaic.append(raster)
+                        output_data = raster.meta.copy()
+                mosaic, output = merge(srcs_to_mosaic)
+                output_data.update(
+                    {"driver": "GTiff",
+                     "height": mosaic.shape[1],
+                     "width": mosaic.shape[2],
+                     "transform": output
+                     }
+                )
+
+                if 'outputdirectory' in kwargs.keys():
+                    if 'filename' in kwargs.keys():
+                        with rasterio.open(os.path.join(
+                                kwargs['outputdirectory'], kwargs['filename'] + '.geotiff'), "w", **output_data) as m:
+                            m.write(mosaic)
+                        print("Finished image mosaic process, output directory is: {}".format(kwargs['outputdirectory']))
+                    else:
+                        with rasterio.open(os.path.join(
+                                kwargs['outputdirectory'], 'merged_image.geotiff'), "w", **output_data) as m:
+                            m.write(mosaic)
+                        print("Finished image mosaic process, output directory is: {}".format(kwargs['outputdirectory']))
+                else:
+                    if 'filename' in kwargs.keys():
+                        with rasterio.open(os.path.join(base_dir, kwargs['filename'] + '.geotiff'), "w", **output_data) as m:
+                            m.write(mosaic)
+                    else:
+                        with rasterio.open(os.path.join(base_dir, 'merged_image.geotiff'), "w", **output_data) as m:
+                            m.write(mosaic)
+                    print("Finished image mosaic process, output directory is: {}".format(base_dir))
+        else:
+            self._pillow_mosaic(base_dir, img_format, img_size=img_size, **kwargs)
+
+    def _pillow_mosaic(self, base_dir, img_format, img_size=1024, **kwargs):
+        '''
+                Function creates a mosaic of downloaded image tiles from full_res_dowload function
+                Args:
+                    base_dir (string) = Root directory containing image files to be mosaiced
+                    img_format (string) = Image format of files
+                    img_size (int) = Size of individual image files, defaults to 1024
+                Kwargs:
+                    outputdirectory (string) = Directory destination of finished mosaic file
+                    filename (string) = filename of merged image
+                Returns:
+                    None
+                '''
+
         Image.MAX_IMAGE_PIXELS = None
         coord_list = []
         for k in [i for i in os.listdir(base_dir) if ".txt" not in i and os.path.isfile(os.path.join(base_dir, i))]:
             filename = k
-            coords = k.replace('c', '').replace('_r', ',').replace('.{}'.format(image_format), '').split(',')
+            coords = k.replace('c', '').replace('_r', ',').replace('.{}'.format(img_format), '').split(',')
             if "geotiff" in filename:
                 pre, ext = os.path.splitext(os.path.join(base_dir, filename))
                 os.rename(os.path.join(base_dir, filename), pre + ".tiff")
@@ -676,18 +742,27 @@ class Interface:
                 sys.stdout.write("Processing {} of {} total".format(count, len(coord_list)))
                 sys.stdout.write("\r")
 
-        #must change to tiff because pillow doesnt support geotiff
-        if image_format == "geotiff":
-            image_format = "tiff"
-        #if they specify filename, give it a name. Else, call it merged image
-        if 'filename' in kwargs.keys():
-            filepath = r"{}\{}.{}".format(base_dir, kwargs['filename'], image_format)
-            mosaic.save(filepath)
+        # must change to tiff because pillow doesnt support geotiff
+        if img_format == "geotiff":
+            img_format = "tiff"
+        # if they specify filename, give it a name. Else, call it merged image
+        if 'outputdirectory' in kwargs.keys():
+            if 'filename' in kwargs.keys():
+                filepath = r"{}\{}.{}".format(kwargs['outputdirectory'], kwargs['filename'], img_format)
+                mosaic.save(filepath)
+                print("Finished image mosaic process, output directory is: {}".format(kwargs['outputdirectory']))
+            else:
+                filepath = r"{}\merged_image.{}".format(kwargs['outputdirectory'], img_format)
+                mosaic.save(filepath)
+                print("Finished image mosaic process, output directory is: {}".format(kwargs['outputdirectory']))
         else:
-            filepath = r"{}\merged_image.{}".format(base_dir, image_format)
-            mosaic.save(filepath)
-
-        print("Finished image mosaic process, output directory is: {}".format(base_dir))
+            if 'filename' in kwargs.keys():
+                filepath = r"{}\{}.{}".format(base_dir, kwargs['filename'], img_format)
+                mosaic.save(filepath)
+            else:
+                filepath = r"{}\merged_image.{}".format(base_dir, img_format)
+                mosaic.save(filepath)
+            print("Finished image mosaic process, output directory is: {}".format(base_dir))
 
     def _band_check(self, featureid, band_combination):
         """

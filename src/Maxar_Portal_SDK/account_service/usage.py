@@ -8,7 +8,6 @@ class Usage:
 
     def __init__(self, auth):
         self.base_url = auth.api_base_url
-        self.headers = process.authorization()
         self.auth = auth
 
     def get_usage(self, activation_id=None):
